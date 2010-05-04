@@ -3,8 +3,8 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 	
 description """
   Basic features support by the MongoDB integration, in
-particular those offer by MongoDbWrapper, the "mongo" bean,
-and MongoService, the "mongoService" bean.
+particular those offer by <b>MongoDbWrapper</b>, the "mongo" bean,
+and <b>MongoService</b>, the "mongoService" bean.
 """
 
 scenario "mongo should be injected", {
@@ -19,7 +19,7 @@ scenario "mongo should be injected", {
 }
 
 scenario "mongoService features", {
-	given "mongService", {
+	given "the mongoService", {
 		inject "mongoService"
 		username = "William"
 	}
@@ -29,12 +29,23 @@ scenario "mongoService features", {
 		}
 	}
 	then "should return array of developers", {
-		assert developers.size() == 3, "Should found 3 developers"
+		developers.size().shouldEqual 3
 	}
 	then "${username} is included and is developer of two projects", {
-		
 		developer = developers.find{it._id == username}
-		assert developer, "Cannot find ${username}!"
-		assert developer.value.count == 2
+		developer.shouldNotBe null
+		ensure (developer.value.count) { isEqualTo 2 }
 	}
+	["Jack", "Paul"].each { name ->
+		and "${name} is included", {
+			developer = developers.find{it._id == name}
+			developer.shouldNotBe null
+		}
+	}
+}
+
+scenario "nested documents (e.g <b>project.leader</b>) are correctly 'unmarshal'", {
+	given "leader is defined for a project document with"
+	when "retrieving the project projects.find(...)"
+	then "project.leader should be an instance of <b>User</b>"
 }
