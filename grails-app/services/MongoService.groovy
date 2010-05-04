@@ -44,22 +44,17 @@ class MongoService implements InitializingBean {
 	}
 	
 	def loadObjs = {
-		def docs = mongo.projects.find()
-		docs.toList().collect{ println it; it.toObject()
-		}
+		def docs = mongo.projects.find()*.toObject()
 	}
 	
 	def showPrjMapper = {
 		def mapper = mongo.getMapperForClass(Project) 
-		def developersField = mapper.fields.find { it.mongoFieldName == "developers"
-		}
+		def developersField = mapper.fields.find { it.mongoFieldName == "developers"}
 		println "$developersField hasMany=$developersField.isGrailsHasMany"
 	}
 	
 	def findByDeveloper = { name ->
-		mongo.projects.find(["developers.username": name] as com.mongodb.BasicDBObject)
-		.each {println it.toObject()
-		}
+		mongo.projects.find(["developers.username": name] as com.mongodb.BasicDBObject)*.toObject()
 	}
 	
 	def dynFinderExample = {
