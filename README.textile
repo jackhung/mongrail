@@ -1,0 +1,101 @@
+<h1>MongoDB in Grails Project</h1>
+
+p.  This is a simple project that I used to get familiar with MongoDB. In the process, I've come to work with
+     the <a href="http://www.grails.org/plugin/mongodb-tools">MongoDB Tools</a> Grails plugin.
+     
+p.  Just for the hack of it, I've extended the MongoDB Tools plugin (see below). 
+
+<h2>Project status</h2>
+
+p.  This is not meant to be a complete application. I'm not spending much effort in building a comprehensive Web Interface.
+     Rather, I'm spending more energy on the exploration of using MongoDB as the persistent back-end (NoSQL is hot).
+     
+p.  Currently, there are a few tests (<a href="easyb">http://www.easyb.org/</> BDD). These should be readable enough to 
+     give you an idea on what I'm trying to get to.
+     
+p.   (<b>Note:</b> You should get yourself familiar with the MongoDB Tools first)
+
+<h2>Getting and running the application</h2>
+
+p.  There is a little hope to jump but it is nothing major. Since I have make some addition to the MongoDB Tools plugin, you
+     have to get my branch of the plugin and package it yourself:
+     
+<pre>
+$ cd ~/works
+$ git clone git@github.com:jackhung/mongodb-grails.git 
+$ cd ~/mongodb-grails
+$ grails package-plugin
+</pre>
+
+p.   Now you should have your package in a file called "grails-mongodb-tools-0.1.zip".
+
+p.   Next check out the application sources:
+
+<pre>
+$ cd ~/works
+$ git clone git@github.com:jackhung/mongrail.git
+$ cd mongrail
+$ grails uninstall-plugin mongodb-tools      (ignore any error/warning)
+$ grails install-plugin ~/works/mongodb-grails/grails-mongodb-tools-0.1.zip
+$ grails test-app :easyb    (assumed that mongod is running)
+</pre>
+
+<h2>Using DBRef in your application</h2>
+
+p.   Define your domain association <b>@MongoRef</b> on the field as in <b>father</b> and <b>mother</b>:
+
+p.   Annotate the domain object with @MongoMapped together with the name of the collection, <b>users</b> in this case. Note that
+     <b>users</b> is actually an alias which should be defined in your Grails configuration (<b>Config.groovy</b>). 
+
+p.   Please noted that this is not to encourage the use of <b>reference</b> instead of the normal practice of embedding in documentDB. 
+      Give it a second thought before using it.
+
+<pre>
+import grails.mongo.MongoRef
+import grails.mongo.MongoMapped
+
+@MongoMapped("users")
+class User {
+  String _id
+  static transcient = ["_id"]
+  String username
+  @MongoRef User father
+  @MongoRef User mother
+  ContactInfo email
+  ContactInfo mobile
+
+  static mongoTypeName = "user"
+  static mongoFields = [
+	"username" : "username", 
+	"father" : "father", 
+	"mother": "mother",
+	"email" : "email",
+	"mobile" : "mobile"
+		]
+ 
+  String toString() {
+    "$username"
+  }
+}
+</pre>
+
+p.   Example on building the association:
+
+<pre>
+		william = mongo.users.findOne([username: userName] as BasicDBObject).toObject()
+		william.father = mongo.users.findOne([username: fatherName] as BasicDBObject).toObject()
+		william.mother = mongo.users.findOne([username: motherName] as BasicDBObject).toObject()
+		mongo.users.update([_id: new ObjectId(william._id)] as BasicDBObject, william.toMongoDoc())
+</pre>
+
+p.   Accessing the domain instance:
+
+<pre>
+		william = mongo.users.findOne([username: userName] as BasicDBObject).toObject()
+		william.father.username.shouldEqual fatherName
+		william.mother.username.shouldEqual motherName
+		
+		william = mongo.users.findOne([username: userName] as BasicDBObject)
+		assert william.father instanceof DBRef
+		assert william.mother instanceof DBRef
+</pre>
