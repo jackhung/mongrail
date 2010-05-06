@@ -10,7 +10,7 @@ p.  Just for the hack of it, I've extended the MongoDB Tools plugin (see below).
 p.  This is not meant to be a complete application. I'm not spending much effort in building a comprehensive Web Interface.
      Rather, I'm spending more energy on the exploration of using MongoDB as the persistent back-end (NoSQL is hot).
      
-p.  Currently, there are a few tests (<a href="easyb">http://www.easyb.org/</a> BDD). These should be readable enough to 
+p.  Currently, there are a few tests (<a href="http://www.easyb.org/">easyb</a> BDD). These should be readable enough to 
      give you an idea on what I'm trying to get to.
      
 p.   (<b>Note:</b> You should get yourself familiar with the MongoDB Tools first)
@@ -44,7 +44,8 @@ $ grails test-app :easyb    (assumed that mongod is running)
 
 p.   Define your domain association <b>@MongoRef</b> on the field as in <b>father</b> and <b>mother</b>:
 
-p.   Annotate the domain object with @MongoMapped together with the name of the collection, <b>users</b> in this case. Note that
+p.   Annotate the domain object with <b>@MongoMapped</b> (should rename to something more meaningful, may be @MongoReferencable)
+     together with the name of the collection, <b>users</b> in this case. Note that
      <b>users</b> is actually an alias which should be defined in your Grails configuration (<b>Config.groovy</b>). 
 
 p.   Please noted that this is not to encourage the use of <b>reference</b> instead of the normal practice of embedding in documentDB. 
@@ -99,3 +100,7 @@ p.   Accessing the domain instance:
 	assert william.father instanceof DBRef
 	assert william.mother instanceof DBRef
 </pre>
+
+<h1>Other Ideas</h1>
+* The Mongodb CRUD methods currently require to be passed the mongodb-collection as a parameter. Since the collection name
+   can now be declared with @MongoMapped, the parameter for the CRUD methods could be made optional. 
