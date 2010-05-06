@@ -10,7 +10,7 @@ p.  Just for the hack of it, I've extended the MongoDB Tools plugin (see below).
 p.  This is not meant to be a complete application. I'm not spending much effort in building a comprehensive Web Interface.
      Rather, I'm spending more energy on the exploration of using MongoDB as the persistent back-end (NoSQL is hot).
      
-p.  Currently, there are a few tests (<a href="easyb">http://www.easyb.org/</> BDD). These should be readable enough to 
+p.  Currently, there are a few tests (<a href="easyb">http://www.easyb.org/</a> BDD). These should be readable enough to 
      give you an idea on what I'm trying to get to.
      
 p.   (<b>Note:</b> You should get yourself familiar with the MongoDB Tools first)
@@ -82,20 +82,20 @@ class User {
 p.   Example on building the association:
 
 <pre>
-		william = mongo.users.findOne([username: userName] as BasicDBObject).toObject()
-		william.father = mongo.users.findOne([username: fatherName] as BasicDBObject).toObject()
-		william.mother = mongo.users.findOne([username: motherName] as BasicDBObject).toObject()
-		mongo.users.update([_id: new ObjectId(william._id)] as BasicDBObject, william.toMongoDoc())
+	william = mongo.users.findOne([username: userName] as BasicDBObject).toObject()
+	william.father = mongo.users.findOne([username: fatherName] as BasicDBObject).toObject()
+	william.mother = mongo.users.findOne([username: motherName] as BasicDBObject).toObject()
+	mongo.users.update([_id: new ObjectId(william._id)] as BasicDBObject, william.toMongoDoc())
 </pre>
 
 p.   Accessing the domain instance:
 
 <pre>
-		william = mongo.users.findOne([username: userName] as BasicDBObject).toObject()
-		william.father.username.shouldEqual fatherName
-		william.mother.username.shouldEqual motherName
+	william = mongo.users.findOne([username: userName] as BasicDBObject).toObject()
+	william.father.username.shouldEqual fatherName
+	william.mother.username.shouldEqual motherName
 		
-		william = mongo.users.findOne([username: userName] as BasicDBObject)
-		assert william.father instanceof DBRef
-		assert william.mother instanceof DBRef
+	william = mongo.users.findOne([username: userName] as BasicDBObject)
+	assert william.father instanceof DBRef
+	assert william.mother instanceof DBRef
 </pre>
