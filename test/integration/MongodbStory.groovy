@@ -12,6 +12,9 @@ scenario "mongo should be injected", {
 	when "requesting mongo bean", {
 		//println "====>" + ApplicationHolder.application
 		inject "mongo"
+		inject "mongoService"
+		mongoService.drop()
+		mongoService.bootStrap()
 	}
 	then "mongo should be callable", {
 		assert mongo.projects.count > 0, "Project count should not be 0"
@@ -20,7 +23,6 @@ scenario "mongo should be injected", {
 
 scenario "mongoService features", {
 	given "the mongoService", {
-		inject "mongoService"
 		username = "William"
 	}
 	when "requesting mapReduceCountProjectsByDeveloper", {
