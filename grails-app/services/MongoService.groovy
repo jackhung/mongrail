@@ -1,5 +1,6 @@
 import org.springframework.beans.factory.InitializingBean
 import com.mongodb.BasicDBObject
+import com.mongodb.DBRef
 
 /**
  * Some convenient methods for manipulating the mongo database/collections
@@ -90,4 +91,31 @@ class MongoService implements InitializingBean {
 		//result.each {print it}
 		result
 	}
+	
+	def seedUsers = {
+		mongo.users.drop()
+		def umap = [:]
+		["pete", "paul", "mary", "jack", "june", "bart", "mickey"].each { name ->
+			def u = new User(username: name)//[username: name] as BasicDBObject
+			umap[name] = u.toMongoDoc()
+			mongo.users.save(umap[name])
+			println umap[name]
+		}
+//		umap["pete"].father = ['$ref': "users", '$id': umap["paul"]._id] as BasicDBObject
+//		umap["pete"].mother = ['$ref': "users", '$id': umap["mary"]._id] as BasicDBObject
+		def pete = mongo.users.findOne([username: "pete"] as BasicDBObject).toObject()
+		pete.father = mongo.users.findOne([username: "paul"] as BasicDBObject).toObject()
+		pete.mother = mongo.users.findOne([username: "mary"] as BasicDBObject).toObject()
+		pete.mobile = new ContactInfo(info: "9876-5432")
+		mongo.users.update([_id: new com.mongodb.ObjectId(pete._id)] as BasicDBObject, pete.toMongoDoc())
+//		umap."pete".father = new DBRef(mongo.devsrv.getDB("demoapp"), "users", umap."paul"._id)
+//		umap."pete".mother = new DBRef(mongo.devsrv.getDB("demoapp"), "users", umap."mary"._id)
+//		println umap["pete"]
+//		mongo.users.save(umap["pete"])
+		
+		pete = mongo.users.findOne([username: "pete"] as BasicDBObject)
+		// assert pete.father instanceof DBRef
+		println pete
+		println pete.toObject().father
+			}
 }

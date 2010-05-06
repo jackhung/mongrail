@@ -3,7 +3,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 	
 description """
   Basic features support by the MongoDB integration, in
-particular those offer by <b>MongoDbWrapper</b>, the "mongo" bean,
+particular those offered by <b>MongoDbWrapper</b>, the "mongo" bean,
 and <b>MongoService</b>, the "mongoService" bean.
 """
 

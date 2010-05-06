@@ -77,6 +77,8 @@ log4j = {
 	       'org.springframework',
 	       'org.hibernate',
            'net.sf.ehcache.hibernate'
+		
+	debug	'com.iolog.mongodbtools'
 
     warn   'org.mortbay.log'
 }
@@ -90,6 +92,7 @@ mongo {
 	}
 	shortcuts {
 		projects = "devsrv/demoapp/projects"
+		users = "devsrv/demoapp/users"
 	}
 }
 

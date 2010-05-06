@@ -1,3 +1,7 @@
+import grails.mongo.MongoRef
+import grails.mongo.MongoMapped
+
+@MongoMapped("projects")
 class Project {
   String _id
   static transcient = ["_id"]
