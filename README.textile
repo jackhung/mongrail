@@ -103,4 +103,5 @@ p.   Accessing the domain instance:
 
 <h1>Other Ideas</h1>
 * The Mongodb CRUD methods currently require to be passed the mongodb-collection as a parameter. Since the collection name
-   can now be declared with @MongoMapped, the parameter for the CRUD methods could be made optional. 
+   can now be declared with @MongoMapped, the parameter for the CRUD methods could be made optional.
+* Dynamic fields: something like user.put("nickname", someValue) 
